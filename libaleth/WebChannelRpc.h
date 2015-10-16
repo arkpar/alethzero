@@ -14,45 +14,43 @@
 	You should have received a copy of the GNU General Public License
 	along with cpp-ethereum.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** @file RPCHost.h
- * @author Gav Wood <i@gavwood.com>
+/** @file WebChannelRpc.h
+ * @authors:
+ *   Arkadiy Paronyan <arkadiy@ethdev.com>
  * @date 2015
  */
 
 #pragma once
 
-#include <libdevcore/Common.h>
+#include <memory>
+#include <QObject>
+#include <jsonrpccpp/server/abstractserverconnector.h>
+
+class QWebChannel;
 
 namespace dev
 {
-
-class SafeHttpServer;
-
 namespace aleth
 {
-
-class AlethFace;
-class WebThreeServer;
-class WebChannelRpc;
-
-class RPCHost
+class WebChannelRpc: public QObject, public jsonrpc::AbstractServerConnector
 {
+	Q_OBJECT
+
 public:
-	RPCHost() = default;
-	RPCHost(AlethFace* _aleth) { init(_aleth); }
-	~RPCHost();
+	WebChannelRpc();
+	virtual bool StartListening();
+	virtual bool StopListening();
+	virtual bool SendResponse(std::string const& _response, void* _addInfo = nullptr);
+	QWebChannel* channel() { return m_webChannel; }
 
-	void init(AlethFace* _aleth);
+	Q_INVOKABLE QString send(QString const& _request);
+	Q_INVOKABLE void sendAsync(QString const& _request);
 
-	WebThreeServer* web3Server() const { return m_server.get(); }
-	SafeHttpServer* web3ServerConnector() const { return m_httpConnector.get(); }
-	WebChannelRpc* webChannelConnector() const { return m_webChannelConnector; }
+signals:
+	void response(QString _response);
 
 private:
-	std::shared_ptr<SafeHttpServer> m_httpConnector;
-	std::shared_ptr<WebThreeServer> m_server;
-	WebChannelRpc* m_webChannelConnector = 0;
+	QWebChannel* m_webChannel;
 };
-
 }
-}
+} // namespace dev

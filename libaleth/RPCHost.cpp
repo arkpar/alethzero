@@ -24,6 +24,7 @@
 #include <libweb3jsonrpc/SafeHttpServer.h>
 #include "WebThreeServer.h"
 #include "AlethFace.h"
+#include "WebChannelRpc.h"
 using namespace std;
 using namespace dev;
 using namespace aleth;
@@ -33,6 +34,9 @@ void RPCHost::init(AlethFace* _aleth)
 	m_httpConnector.reset(new SafeHttpServer(SensibleHttpPort, "", "", SensibleHttpThreads));
 	m_server.reset(new WebThreeServer(*m_httpConnector, _aleth));
 	m_server->enableIpc(true);
+	unique_ptr<WebChannelRpc> webChannelConnector(new WebChannelRpc());
+	m_webChannelConnector = webChannelConnector.get();
+	m_server->addConnector(unique_ptr<jsonrpc::AbstractServerConnector>(move(webChannelConnector))); // transfer ownership
 	m_server->StartListening();
 }
 

@@ -77,7 +77,7 @@ void SyncView::paintEvent(QPaintEvent*)
 	unsigned hashDone = hashFrom + (sync.state == SyncState::Hashes ? sync.hashesReceived : hashCount);
 
 	QString labelText = QString("PV%1").arg(sync.protocolVersion);
-	QColor labelBack = QColor::fromHsv(sync.protocolVersion == 60 ? 30 : sync.protocolVersion == 61 ? 120 : 240, 25, 200);
+	QColor labelBack = QColor::fromHsv(sync.protocolVersion == 62 ? 30 : sync.protocolVersion == 63 ? 120 : 240, 25, 200);
 	QColor labelFore = labelBack.darker();
 	switch (sync.state)
 	{

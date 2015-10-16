@@ -32,6 +32,8 @@
 #include <libaleth/AlethFace.h>
 #include <libaleth/DappHost.h>
 #include <libaleth/DappLoader.h>
+#include <libaleth/RPCHost.h>
+#include <libaleth/WebChannelRpc.h>
 #include "ZeroFace.h"
 #include "ui_Browser.h"
 using namespace std;
@@ -112,6 +114,8 @@ Browser::Browser(ZeroFace* _m):
 			m_ui->jsConsole->setVisible(!m_ui->jsConsole->isVisible());
 			m_ui->consoleToggle->setChecked(m_ui->jsConsole->isVisible());
 		});
+		m_ui->webView->page()->setWebChannel(zero()->rpcHost()->webChannelConnector()->channel());
+
 		m_finding = false;
 		reloadUrl();
 	});

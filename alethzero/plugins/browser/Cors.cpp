@@ -23,6 +23,7 @@
 #include <QSettings>
 #include <libweb3jsonrpc/SafeHttpServer.h>
 #include <libaleth/AlethFace.h>
+#include <libaleth/RPCHost.h>
 #include "ZeroFace.h"
 #include "ui_Cors.h"
 using namespace std;
@@ -38,7 +39,7 @@ Cors::Cors(ZeroFace* _m):
 {
 	_m->addSettingsPage(2, "Security", [this](){
 		CorsSettingsPage* page = new CorsSettingsPage();
-		connect(page, &SettingsPage::displayed, [this, page]() { page->setDomain(QString::fromStdString(zero()->web3ServerConnector()->allowedOrigin())); });
+		connect(page, &SettingsPage::displayed, [this, page]() { page->setDomain(QString::fromStdString(zero()->rpcHost()->web3ServerConnector()->allowedOrigin())); });
 		connect(page, &SettingsPage::applied, [this, page]() { setDomain(page->domain()); });
 		return page;
 	});
@@ -55,12 +56,12 @@ void Cors::readSettings(QSettings const& _s)
 
 void Cors::writeSettings(QSettings& _s)
 {
-	_s.setValue("corsDomain", QString::fromStdString(zero()->web3ServerConnector()->allowedOrigin()));
+	_s.setValue("corsDomain", QString::fromStdString(zero()->rpcHost()->web3ServerConnector()->allowedOrigin()));
 }
 
 void Cors::setDomain(QString const& _domain)
 {
-	zero()->web3ServerConnector()->setAllowedOrigin(_domain.toStdString());
+	zero()->rpcHost()->web3ServerConnector()->setAllowedOrigin(_domain.toStdString());
 }
 
 CorsSettingsPage::CorsSettingsPage():

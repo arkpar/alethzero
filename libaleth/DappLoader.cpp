@@ -24,6 +24,7 @@
 #include <json/json.h>
 #include <boost/algorithm/string.hpp>
 #include <QUrl>
+#include <QFile>
 #include <QStringList>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -116,6 +117,7 @@ QByteArray DappLoader::injectWeb3(QByteArray _page) const
 	//inject web3 js
 	QByteArray content = "<script>\n";
 	content.append(jsCode());
+	content.append("web3.setProvider(new QtProvider());\n");
 	content.append(("web3.admin.setSessionKey('" + m_sessionKey + "');").c_str());
 	content.append("</script>\n");
 	content.append(_page);
@@ -294,6 +296,12 @@ QString DappLoader::makeJSCode()
 	content += QString::fromStdString(resources.loadResourceAsString("setup"));
 	content += "\n";
 	content += QString::fromStdString(resources.loadResourceAsString("admin"));
+	content += "\n";
+	QFile qwebchannel(":/qtwebchannel/qwebchannel.js");
+	qwebchannel.open(QIODevice::ReadOnly|QIODevice::Text);
+	content += qwebchannel.readAll();
+	content += "\n";
+	content += QString::fromStdString(resources.loadResourceAsString("qtprovider"));
 	content += "\n";
 	return content;
 }

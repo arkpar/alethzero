@@ -41,6 +41,7 @@ namespace aleth
 
 class AlethFace;
 class WebThreeServer;
+class RPCHost;
 
 namespace zero
 {
@@ -77,7 +78,7 @@ public:
 	virtual AlethFace* aleth() = 0;
 
 	virtual WebThreeServer* web3Server() const = 0;
-	virtual SafeHttpServer* web3ServerConnector() const = 0;
+	virtual RPCHost const* rpcHost() const = 0;
 
 	virtual void allStop() = 0;
 	virtual void carryOn() = 0;
